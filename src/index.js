@@ -38,17 +38,16 @@ app.get('/', (req, res) => {
     res.json(app);
 });
 
-app.get('/oauth2', (req, res) => {
+app.post('/oauth2/v1/authorize', (req, res) => {
     try {
         const {
             callback_uri: callbackUri,
-            query
-        } = req.query;
+            state
+        } = req.body;
 
-        const redirectUri = oauth.getAuthorizeUrl(callbackUri, query);
+        const redirectUri = oauth.getAuthorizeUrl(callbackUri, state);
         res.json({
-            redirect_uri: redirectUri,
-            callback_uri: callbackUri
+            redirect_uri: redirectUri
         })
     } catch (err) {
         res
@@ -57,7 +56,7 @@ app.get('/oauth2', (req, res) => {
     }
 });
 
-app.post('/oauth2', async (req, res) => {
+app.post('/oauth2/v1/access_token', async (req, res) => {
     try {
         const tokens = await oauth.getAccessToken(req.body.code, req.body.fields.callback_uri);
         res.json(tokens);
@@ -75,6 +74,7 @@ app.post('/authenticate', async (req, res) => {
             name: userInfo.name,
             id: userInfo.id,
             email: userInfo.email,
+            host: `demoapp-oauth`,
             companies: [
                 {
                     host: userInfo.id,

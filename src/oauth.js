@@ -10,19 +10,16 @@ function getTokenExpiration(expiresIn) {
 }
 
 module.exports = {
-    getAuthorizeUrl: function getAuthorizeUrl(callbackUri, query) {
-        let queryParams = {};
-
-        if (query) {
-            queryParams = JSON.parse(query);
-        }
-
-        queryParams.access_type = `offline`;
-        queryParams.redirect_uri = callbackUri;
-        queryParams.response_type = `code`;
-        queryParams.client_id = CLIENT_ID;
-        queryParams.prompt = `consent`;
-        queryParams.scope = `profile`;
+    getAuthorizeUrl: function getAuthorizeUrl(callbackUri, state) {
+        const queryParams = {
+            state,
+            access_type: 'offline',
+            redirect_uri: callbackUri,
+            response_type: 'code',
+            client_id: CLIENT_ID,
+            prompt: 'consent',
+            scope: 'profile'
+        };
 
         const queryParamsStr = Object.keys(queryParams)
             .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`)
