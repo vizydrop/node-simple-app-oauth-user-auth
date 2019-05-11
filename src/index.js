@@ -47,7 +47,8 @@ app.get('/oauth2', (req, res) => {
 
         const redirectUri = oauth.getAuthorizeUrl(callbackUri, query);
         res.json({
-            redirect_uri: redirectUri
+            redirect_uri: redirectUri,
+            callback_uri: callbackUri
         })
     } catch (err) {
         res
@@ -96,7 +97,7 @@ app.post('/validate', async (req, res) => {
             access_token: accessToken,
             refresh_token: refreshToken,
             token_expiration: tokenExpiration
-        } = req.body;
+        } = req.body.fields;
 
         const refreshedTokenInfo = (await oauth.refreshTokenIfNeeded(
             refreshToken,
